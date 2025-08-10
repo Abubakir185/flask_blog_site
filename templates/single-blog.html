@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }} - My Blog{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+  <!-- Author & Date -->
+  <div class="d-flex align-items-center mb-4">
+    <img src="{{ post.author.avatar_url or url_for('static', filename='default-avatar.png') }}"
+         class="rounded-circle me-3 shadow-sm" width="55" height="55" alt="Author Avatar">
+    <div>
+      <div class="fw-bold fs-5">{{ post.author.username }}</div>
+      <small class="text-muted">
+        {{ post.date_posted.strftime('%B %d, %Y') }} · {{ moment(post.date_posted).fromNow() }}
+      </small>
+    </div>
+  </div>
+  
+  <!-- Large Post Image -->
+  {% if post.image %}
+    <div class="mb-4">
+      <img src="{{ post.image }}" class="img-fluid w-100 rounded shadow-sm" 
+           alt="{{ post.title }}" style="max-height: 500px; object-fit: cover;">
+    </div>
+  {% endif %}
+
+  <!-- Post Title -->
+  <h1 class="fw-bold mb-3">{{ post.title }}</h1>
+
+  <!-- Categories -->
+  {% if post.categories %}
+    <div class="mb-4">
+      {% for cat in post.categories %}
+        <span class="badge rounded-pill text-bg-light border border-primary text-primary px-3 py-2 shadow-sm">
+          {{ cat.name }}
+        </span>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Post Content -->
+  <div class="mb-5" style="white-space: pre-line; font-size: 1.15rem; line-height: 1.8;">
+    {{ post.content }}
+  </div>
+
+  <!-- Comments Section -->
+  <div class="mb-5">
+    <h4 class="mb-4 border-bottom pb-2">{{ comments|length }} Comments</h4>
+    {% for comment in comments %}
+      <div class="d-flex mb-4">
+        <img src="{{ comment.user.avatar_url or url_for('static', filename='default-avatar.png') }}"
+             class="rounded-circle me-3" width="40" height="40" alt="User Avatar">
+        <div class="flex-grow-1 p-3 rounded-3 shadow-sm" style="background-color: #f8f9fa;">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <strong>{{ comment.user.username }}</strong>
+            <small class="text-muted">{{ moment(comment.created_at).fromNow() }}</small>
+          </div>
+          <p class="mb-0" style="white-space: pre-line;">{{ comment.text }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Add Comment -->
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h5 class="card-title mb-3">Kamentariya yozish</h5>
+      <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+          <textarea name="text" class="form-control" rows="3" placeholder="Fikringizni yozing..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary px-4">Yuborish</button>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
