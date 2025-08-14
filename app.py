@@ -7,11 +7,9 @@ from models import User, Post, Comment, Category
 from forms import RegisterForm, LoginForm, PostForm, CommentForm
 from werkzeug.utils import secure_filename
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
 
 @app.route('/')
 @login_required
@@ -225,6 +223,7 @@ def upload_avatar():
 #     posts = Post.query.filter_by(category_id=category.id).all()
 #     return render_template('category_posts.html', category=category, posts=posts)
 
-
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
